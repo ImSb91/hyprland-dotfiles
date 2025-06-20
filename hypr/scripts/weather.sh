@@ -36,7 +36,7 @@ RESPONSE=$(curl -s $URL)
 
 if [ -z "$RESPONSE" ] || [ "$(echo "$RESPONSE" | jq -r .cod)" != "200" ]; then
     echo "{ \"text\": \" \", \"tooltip\": \"Weather data unavailable\", \"class\": \"weather\", \"color\": \"${COLOR_ERR}\" }"
-    exit 1
+    exit 0
 fi
 
 # Extract Data
