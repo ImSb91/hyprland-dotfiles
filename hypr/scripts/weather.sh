@@ -35,7 +35,7 @@ URL="https://api.openweathermap.org/data/2.5/weather?appid=$APIKEY&units=$UNITS&
 RESPONSE=$(curl -s $URL)
 
 if [ -z "$RESPONSE" ] || [ "$(echo "$RESPONSE" | jq -r .cod)" != "200" ]; then
-    echo "{ \"text\": \" Error\", \"tooltip\": \"Weather data unavailable\", \"class\": \"weather\", \"color\": \"${COLOR_ERR}\" }"
+    echo "{ \"text\": \" \", \"tooltip\": \"Weather data unavailable\", \"class\": \"weather\", \"color\": \"${COLOR_ERR}\" }"
     exit 1
 fi
 
