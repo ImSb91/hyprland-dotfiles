@@ -1,0 +1,22 @@
+@import "config.rasi"
+
+window {
+	width: 760px;
+}
+
+listview {
+	lines:        4;
+	fixed-height: false;
+	dynamic:      true;
+}
+
+element {
+	padding:  8px 12px;
+	children: [ "element-icon", "element-text" ];
+}
+
+element-icon {
+	size:             110px;
+	horizontal-align: 0.0;
+	vertical-align:   0.5;
+}

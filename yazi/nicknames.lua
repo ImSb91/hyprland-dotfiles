@@ -1,0 +1,25 @@
+return {
+	mode = 1,
+	names = {
+		["3028797977"] = "na3na3",
+		["2622380"] = "ELDEN RING NIGHTREIGN",
+		["3513350"] = "Wuthering Waves",
+		["ELDEN RING NIGHTREIGN"] = "MODDED",
+		["arabic-calligraphy-1280x720-1787824583658.svg"] = "icon",
+		["release"] = "nightreign",
+		["2180100"] = "Proton Hotfix",
+		["1493710"] = "Proton Experimental",
+		["291550"] = "Brawlhalla",
+	},
+	paths = {
+		["/home/imsb/Downloads/release"] = "nightreign",
+		["/home/imsb/.steam/steam/steamapps/compatdata/1493710"] = "Proton Experimental",
+		["/home/imsb/Games/ELDEN RING NIGHTREIGN"] = "MODDED",
+		["/home/imsb/.steam/steam/steamapps/compatdata/2622380"] = "ELDEN RING NIGHTREIGN",
+		["/home/imsb/.steam/steam/steamapps/compatdata/3028797977"] = "na3na3",
+		["/home/imsb/.steam/steam/steamapps/compatdata/2180100"] = "Proton Hotfix",
+		["/home/imsb/Downloads/arabic-calligraphy-1280x720-1787824583658.svg"] = "icon",
+		["/home/imsb/.steam/steam/steamapps/compatdata/3513350"] = "Wuthering Waves",
+		["/home/imsb/.steam/steam/steamapps/compatdata/291550"] = "Brawlhalla",
+	},
+}

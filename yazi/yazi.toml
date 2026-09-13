@@ -1,0 +1,26 @@
+[mgr]
+linemode = "size_and_mtime"
+
+[preview]
+max_width    = 2500
+max_height   = 2500
+image_filter = "triangle"
+image_quality = 80
+
+[plugin]
+prepend_previewers = [
+  { mime = "image/{avif,avifs,hei?,jxl}", run = "magick" },
+  { mime = "image/svg+xml", run = "svg" },
+  { mime = "image/*", run = "image" },
+]
+
+[opener]
+appimage = [
+  { run = 'chmod +x "%s1" 2>/dev/null; nohup "%s1" >/dev/null 2>&1 &', desc = "Run AppImage", orphan = true },
+]
+
+[open]
+prepend_rules = [
+  { url = "*.{appimage,AppImage}", use = [ "appimage", "reveal" ] },
+  { url = "*.{zip,rar,7z,cbr,cbz,jar,war,apk,iso,deb,rpm,tar,tgz,txz,xz,gz,bz2,bz,bzip2,zst,lz4,cpio,arj}", use = [ "extract", "reveal" ] },
+]

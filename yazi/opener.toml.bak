@@ -1,0 +1,5 @@
+[[opener]]
+run = "unrar x -- \"$1\""
+desc = "Extract RAR"
+apply = "ext == rar"
+
