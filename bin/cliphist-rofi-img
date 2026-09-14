@@ -31,15 +31,16 @@ print_list() {
   mapfile -t rows < <(cliphist list)
   # keep rofi from jumping to the top (or resetting the filter) after a refresh
   printf '\0keep-selection\x1ftrue\n\0keep-filter\x1ftrue\n'
+  # natural cliphist order: most recently copied at the top
   for line in "${rows[@]}"; do
     [ -z "$line" ] && continue
     id="${line%%$'\t'*}"; rest="${line#*$'\t'}"
-    if [[ "$rest" =~ binary[[:space:]]data ]]; then emit_image "$id" "$rest" "$line" || true; fi
-  done
-  for line in "${rows[@]}"; do
-    [ -z "$line" ] && continue
-    id="${line%%$'\t'*}"; rest="${line#*$'\t'}"
-    if [[ ! "$rest" =~ binary[[:space:]]data ]]; then
+    if [[ "$rest" =~ binary[[:space:]]data ]]; then
+      if ! emit_image "$id" "$rest" "$line"; then
+        # image row without a preview (e.g. corrupt clip) - keep it in place, text only
+        printf '%s\0display\x1f%s\n' "$line" "$rest"
+      fi
+    else
       printf '%s\t%s\0display\x1f%s\n' "$id" "$rest" "$(sanitize "$rest")"
     fi
   done
