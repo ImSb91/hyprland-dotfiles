@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+rofi \
+    -modi "clipboard:$HOME/.local/bin/cliphist-rofi-img" \
+    -show clipboard \
+    -show-icons \
+    -kb-delete-entry "D,Shift+Delete" \
+    -theme-str 'window { height: 350px; } listview { lines: 4; } element-icon { size: 56px; }'

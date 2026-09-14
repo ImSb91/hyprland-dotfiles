@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Launch a command and force all of ITS windows onto the workspace where
+# you launched it, even if they appear seconds later (Proton/Wine apps).
+# Uses: launch slow apps from rofi without them teleporting to your current workspace.
+
+[ $# -ge 1 ] || exit 0
+cmd="$*"
+
+ws="$(hyprctl activeworkspace -j 2>/dev/null | jq -r '.id // empty')"
+[ -n "$ws" ] || ws="open"
+
+# launch in a subshell so `base` lives as long as the app (and its children)
+( eval "$cmd" ) &
+base=$!
+
+is_desc() { # $1=ancestor pid, $2=descendant pid (walks /proc PPID chain)
+  local anc=$1 cur=$2 pp
+  while [ "$cur" -gt 1 ] 2>/dev/null; do
+    [ "$cur" = "$anc" ] && return 0
+    pp="$(awk '{print $4}' "/proc/$cur/stat" 2>/dev/null)" || return 1
+    [ -z "$pp" ] || [ "$pp" = "$cur" ] && return 1
+    cur=$pp
+  done
+  return 1
+}
+
+declare -A moved
+loops=0
+for ((i = 0; i < 360; i++)); do
+  # stop 10s after the launching process tree is gone (or after ~3 min)
+  if ! kill -0 "$base" 2>/dev/null; then
+    ((loops++))
+    ((loops >= 10)) && break
+  else
+    loops=0
+  fi
+
+  while IFS=$'\t' read -r pid wid; do
+    [ -z "$pid" ] || [ "$pid" = "null" ] && continue
+    [ -n "${moved[$pid]}" ] && continue   # don't re-fight the user later
+    moved[$pid]=1
+    if is_desc "$base" "$pid" && [ "$wid" != "$ws" ]; then
+      hyprctl dispatch movetoworkspace "$ws", "pid:$pid" >/dev/null 2>&1
+    fi
+  done < <(hyprctl clients -j 2>/dev/null | jq -r '.[] | select(.mapped == true) | [(.pid // 0), (.workspace.id // "null")] | @tsv')
+
+  sleep 0.5
+done
+exit 0

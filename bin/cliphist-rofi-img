@@ -1,0 +1,60 @@
+#!/bin/bash
+
+THUMB_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/cliphist-thumbs"
+mkdir -p "$THUMB_DIR"
+
+sanitize() { printf '%s\n' "$1" | tr -cd '[:print:]'; }
+
+emit_image() {
+  local id="$1" rest="$2" raw="$3" ext src prev
+  if [[ "$rest" =~ binary[[:space:]]data.*[[:space:]](jpe?g|png|webp|gif|bmp)[[:space:]] ]]; then
+    ext="${BASH_REMATCH[1]}"
+    src="$THUMB_DIR/$id.$ext"
+    if [ ! -f "$src" ] || [ ! -s "$src" ]; then
+      printf '%s\n' "$raw" | cliphist decode 2>/dev/null > "$src"
+    fi
+    prev="$THUMB_DIR/$id.prev.png"
+    if [ ! -f "$prev" ] && [ -s "$src" ]; then
+      magick "$src" -auto-orient -strip -resize '256x256>' "$prev" 2>/dev/null
+    fi
+    if [ -s "$prev" ]; then
+      # rofi 2.0 renders \0icon only when the row has no \0display
+      printf '%s\0icon\x1f%s\n' "$raw" "$prev"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+print_list() {
+  local rows line id rest
+  mapfile -t rows < <(cliphist list)
+  # keep rofi from jumping to the top (or resetting the filter) after a refresh
+  printf '\0keep-selection\x1ftrue\n\0keep-filter\x1ftrue\n'
+  for line in "${rows[@]}"; do
+    [ -z "$line" ] && continue
+    id="${line%%$'\t'*}"; rest="${line#*$'\t'}"
+    if [[ "$rest" =~ binary[[:space:]]data ]]; then emit_image "$id" "$rest" "$line" || true; fi
+  done
+  for line in "${rows[@]}"; do
+    [ -z "$line" ] && continue
+    id="${line%%$'\t'*}"; rest="${line#*$'\t'}"
+    if [[ ! "$rest" =~ binary[[:space:]]data ]]; then
+      printf '%s\t%s\0display\x1f%s\n' "$id" "$rest" "$(sanitize "$rest")"
+    fi
+  done
+}
+
+if [ -z "$1" ] || [ "${ROFI_RETV:-0}" = "0" ]; then
+  print_list
+  exit 0
+fi
+
+case "${ROFI_RETV:-1}" in
+  # D pressed -> delete this entry from cliphist and refresh the menu
+  3)
+    printf '%s\n' "$1" | cliphist delete 2>/dev/null
+    print_list
+    ;;
+  *) echo "$1" | cliphist decode | wl-copy ;;
+esac
