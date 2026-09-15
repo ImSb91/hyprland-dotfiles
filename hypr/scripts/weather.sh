@@ -29,12 +29,36 @@ HOT_TEMP=34
 MID_TEMP=27
 COLD_TEMP=10
 
-# API Call
+# Cache last successful result so a network cut never shows a blank "?"
+CACHE_FILE="$HOME/.cache/waybar-weather"
+STALE_AFTER=600      # seconds before we refresh a successful fetch
+CACHE_MAX_AGE=86400  # never show data older than a day (boot w/ old cache)
+
+CACHE_FRESH=0
+if [ -f "$CACHE_FILE" ]; then
+  CACHE_TS=$(stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0)
+  NOW_TS=$(date +%s)
+  if [ $((NOW_TS - CACHE_TS)) -lt "$STALE_AFTER" ]; then
+    cat "$CACHE_FILE"
+    exit 0
+  fi
+  # stale but recent enough to show while offline instead of "?"
+  if [ $((NOW_TS - CACHE_TS)) -lt "$CACHE_MAX_AGE" ]; then
+    CACHE_FRESH=1
+  fi
+fi
+
+# API Call (tight timeouts so the module never hangs on a dead connection)
 URL="https://api.openweathermap.org/data/2.5/weather?appid=$APIKEY&units=$UNITS&lang=$LANG&q=$(echo $CITY_NAME | sed 's/ /%20/g'),${COUNTRY_CODE}"
-RESPONSE=$(curl -s "$URL")
+RESPONSE=$(curl -s --connect-timeout 2 --max-time 4 "$URL")
 
 if [ -z "$RESPONSE" ] || [ "$(echo "$RESPONSE" | jq -r .cod)" != "200" ]; then
-  echo "{ \"text\":\" \", \"tooltip\": \"Weather data unavailable\", \"class\": \"weather\", \"color\": \"${COLOR_ERR}\" }"
+  if [ "$CACHE_FRESH" = "1" ]; then
+    # internet dropped: keep showing last known weather until it's back
+    cat "$CACHE_FILE"
+  else
+    echo "{ \"text\":\" \", \"tooltip\": \"Weather data unavailable\", \"class\": \"weather\", \"color\": \"${COLOR_ERR}\" }"
+  fi
   exit 0
 fi
 
@@ -151,5 +175,7 @@ setIcons
 formatTemperature
 
 # Output JSON for Waybar with Pango Markup
+OUTPUT="{ \"text\": \"<span color='${ICON_COLOR}'>${ICON}</span> <span color='${TEMP_COLOR}'>${TEMP_ICON}</span> ${TEMP}°C\", \"tooltip\": \"Weather: ${ICON} ${TEMP}°C | Wind: ${WINDFORCE_KMH} km/h\", \"class\": \"weather\", \"color\": \"${COLOR_WHITE}\" }"
 
-echo "{ \"text\": \"<span color='${ICON_COLOR}'>${ICON}</span> <span color='${TEMP_COLOR}'>${TEMP_ICON}</span> ${TEMP}°C\", \"tooltip\": \"Weather: ${ICON} ${TEMP}°C | Wind: ${WINDFORCE_KMH} km/h\", \"class\": \"weather\", \"color\": \"${COLOR_WHITE}\" }"
+printf '%s\n' "$OUTPUT" > "$CACHE_FILE"
+printf '%s\n' "$OUTPUT"
