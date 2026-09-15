@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Screenshot + "Screenshot saved" notification with image preview.
+# Usage: screenshot [region|output|window]
+MODE="${1:-region}"
+DIR="${SCREENSHOT_DIR:-$HOME/Pictures/Screenshots}"
+mkdir -p "$DIR"
+F="$(date +%Y-%m-%d_%H-%M-%S).png"
+
+case "$MODE" in
+  output) ARGS=(-m output -m eDP-1) ;;
+  window) ARGS=(-m window -z) ;;
+  *)      ARGS=(-m region -z) ;;
+esac
+
+# -s = silent, so we run our own notification below
+hyprshot "${ARGS[@]}" -o "$DIR" -f "$F" -s >/dev/null 2>&1
+sleep 0.2
+
+# hyprshot's exit code is unreliable here; the file existing is the real check
+if [ ! -f "$DIR/$F" ]; then
+  exit 0
+fi
+
+dunstify -a Screenshot -i "$DIR/$F" -t 2000 \
+  "Screenshot saved" "Saved to $DIR/$F"
+
+echo "$DIR/$F"
