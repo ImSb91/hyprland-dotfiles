@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 rofi \
-    -modi "clipboard:$HOME/.local/bin/cliphist-rofi-img" \
+    -modi "clipboard:$HOME/.config/hypr/scripts/cliphist-rofi-img" \
     -show clipboard \
     -show-icons \
     -kb-delete-entry "D,Shift+Delete" \
