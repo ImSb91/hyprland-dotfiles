@@ -32,7 +32,7 @@ tab_width = 1
 # Count
 count_copied = { fg = "#1e1e2e", bg = "#a6e3a1" }
 count_cut = { fg = "#1e1e2e", bg = "#f38ba8" }
-count_selected = { fg = "#1e1e2e", bg = "#89b4fa" }
+count_selected = { fg = "#1e1e2e", bg = "#cdd6f4" }
 
 # Border
 border_symbol = "│"
@@ -44,20 +44,20 @@ syntect_theme = "~/.config/yazi/Catppuccin-mocha.tmTheme"
 [status]
 separator_open = ""
 separator_close = ""
-separator_style = { fg = "#45475a", bg = "#45475a" }
+separator_style = { fg = "#cdd6f4", bg = "#cdd6f4" }
 
 # Mode
-mode_normal = { fg = "#1e1e2e", bg = "#89b4fa", bold = true }
+mode_normal = { fg = "#1e1e2e", bg = "#cdd6f4", bold = true }
 mode_select = { fg = "#1e1e2e", bg = "#89dceb", bold = true }
 mode_unset = { fg = "#1e1e2e", bg = "#f38ba8", bold = true }
 
 # Progress
 progress_label = { fg = "#cdd6f4", bg = "#45475a" }
-progress_normal = { fg = "#89b4fa", bg = "#45475a" }
+progress_normal = { fg = "#cdd6f4", bg = "#45475a" }
 progress_error = { fg = "#f38ba8", bg = "#45475a" }
 
 # Permissions
-permissions_t = { fg = "#89b4fa" }
+permissions_t = { fg = "#cdd6f4" }
 permissions_r = { fg = "#f9e2af" }
 permissions_w = { fg = "#f38ba8" }
 permissions_x = { fg = "#a6e3a1" }
