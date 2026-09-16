@@ -21,15 +21,6 @@ cd hyprland-dotfiles
 ./install.sh
 ```
 
-`install.sh` will:
-
-1. Install all repo packages (Hyprland stack, swaync, kitty, nvim, zsh + plugins, fzf/zoxide/atuin, ryzenadj, pamixer, …) and the AUR helpers when `yay` is present
-2. Deploy every config into `~/.config` (+ `~/.zshrc`), backing up anything it overwrites to `~/.dotfiles-backup-<date>`
-3. Create the root helpers (`/usr/local/bin/mic-led`, `mute-led`) and NOPASSWD sudo rules for fan / wattage / ryzenadj
-4. Bootstrap Neovim plugins headless on first run
-
-Files not shipped: **secrets** (e.g. the OpenWeather key for the weather module → put it in `~/.owm-key`).
-
 ## Keybindings
 
 `Super` = main modifier.
@@ -58,5 +49,3 @@ Files not shipped: **secrets** (e.g. the OpenWeather key for the weather module 
 home/.zshrc  hypr/     rofi/    swaync/    waybar/
 yazi/        nvim/     kitty/   install.sh
 ```
-
-Everything mirrors the live `~/.config` (plus `~/.zshrc`) so the repo *is* the backup.
