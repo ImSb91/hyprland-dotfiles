@@ -34,7 +34,7 @@
 
 .notification {
   background: @base; /* #1E1E2E */
-  border: 2px solid @blue; /* Catppuccin Mocha blue #89B4FA */
+  border: 2px solid @text; /* Catppuccin Mocha text #CDD6F4 */
   border-radius: 14px;
   padding: 12px;
   margin: 4px 0;
