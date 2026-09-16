@@ -1,0 +1,21 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "center",
+  "positionY": "top",
+  "layer": "overlay",
+  "notification-window-width": 240,
+  "notification-body-image-width": 200,
+  "notification-body-image-height": 100,
+  "hide-on-action": true,
+  "hide-on-clear": true,
+  "script-fail-notify": true,
+  "timeout": 2,
+  "timeout-low": 2,
+  "timeout-critical": 2,
+  "keyboard-shortcuts": true,
+  "widgets": [
+    "title",
+    "dnd",
+    "notifications"
+  ]
+}
