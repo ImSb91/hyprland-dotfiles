@@ -61,17 +61,19 @@ if [ -z "$1" ] || [ "${ROFI_RETV:-0}" = "0" ]; then
   exit 0
 fi
 
+# a real cliphist row = numeric id + tab + content
+is_row() { [[ "$1" =~ ^[0-9]+$'\t' ]]; }
+
 case "${ROFI_RETV:-1}" in
   # D pressed -> delete this entry from cliphist and refresh the menu
   3)
+    is_row "$1" || exit 0
     printf '%s\n' "$1" | cliphist delete 2>/dev/null
     print_list
     ;;
   # V pressed -> open the image fullscreen in the default viewer (feh)
   10)
-    LOG=$HOME/Documents/log/rofi-v.log
-    mkdir -p "$(dirname "$LOG")"
-    echo "RETV=$ROFI_RETV arg=${1:0:60}" >> "$LOG"
+    is_row "$1" || exit 0
     id="${1%%$'\t'*}"
     f="$THUMB_DIR/clip-open-$id.png"
     printf '%s\n' "$1" | cliphist decode 2>/dev/null > "$f"
@@ -79,6 +81,12 @@ case "${ROFI_RETV:-1}" in
       setsid feh --fullscreen --zoom fill "$f" >/dev/null 2>&1 &
     fi
     ;;
-  *) echo "RETV=$ROFI_RETV arg=${1:0:60}" >> "$HOME/Documents/log/rofi-v.log" 2>/dev/null
-     echo "$1" | cliphist decode | wl-copy ;;
+  # Enter on a real entry -> copy it
+  1)
+    is_row "$1" || exit 0
+    printf '%s\n' "$1" | cliphist decode | wl-copy
+    ;;
+  # typed filter text (custom entry) or anything else -> ignore,
+  # so stray letters/blank presses never get "copied"
+  *) exit 0 ;;
 esac
