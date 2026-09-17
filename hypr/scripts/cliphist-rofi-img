@@ -28,9 +28,12 @@ emit_image() {
 
 print_list() {
   local rows line id rest
-  mapfile -t rows < <(cliphist list)
+  # cap to the most recent items so the menu opens instantly
+  mapfile -t rows < <(cliphist list | head -100)
   # keep rofi from jumping to the top (or resetting the filter) after a refresh
   printf '\0keep-selection\x1ftrue\n\0keep-filter\x1ftrue\n'
+  # enable custom keybindings (V -> RETV 10)
+  printf '\0use-hot-keys\x1ftrue\n'
   # natural cliphist order: most recently copied at the top
   for line in "${rows[@]}"; do
     [ -z "$line" ] && continue
@@ -59,6 +62,9 @@ case "${ROFI_RETV:-1}" in
     ;;
   # V pressed -> open the image fullscreen in the default viewer (feh)
   10)
+    LOG=$HOME/Documents/log/rofi-v.log
+    mkdir -p "$(dirname "$LOG")"
+    echo "RETV=$ROFI_RETV arg=${1:0:60}" >> "$LOG"
     id="${1%%$'\t'*}"
     f="$THUMB_DIR/clip-open-$id.png"
     printf '%s\n' "$1" | cliphist decode 2>/dev/null > "$f"
@@ -66,5 +72,6 @@ case "${ROFI_RETV:-1}" in
       setsid feh --fullscreen --zoom fill "$f" >/dev/null 2>&1 &
     fi
     ;;
-  *) echo "$1" | cliphist decode | wl-copy ;;
+  *) echo "RETV=$ROFI_RETV arg=${1:0:60}" >> "$HOME/Documents/log/rofi-v.log" 2>/dev/null
+     echo "$1" | cliphist decode | wl-copy ;;
 esac
