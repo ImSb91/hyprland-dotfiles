@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Generate previews for any cliphist images that don't have one yet.
+# Background refresher for the rofi clipboard: warm thumbnails + re-render list.
 THUMB="${XDG_CACHE_HOME:-$HOME/.cache}/cliphist-thumbs"
 mkdir -p "$THUMB"
+
+# 1. warm missing previews
 cliphist list 2>/dev/null | while IFS=$'\t' read -r id rest; do
   [ -z "$id" ] && continue
   [[ "$rest" == *binary* ]] || continue
@@ -10,4 +12,8 @@ cliphist list 2>/dev/null | while IFS=$'\t' read -r id rest; do
   printf '%s\n' "$rest" | cliphist decode > "$THUMB/$id.$ext" 2>/dev/null
   magick "$THUMB/$id.$ext" -auto-orient -strip -resize '256x256>' "$THUMB/$id.prev.png" 2>/dev/null
 done
+
+# 2. rebuild the rofi list cache
+CLIP_CACHE_MODE=warm "$HOME/.config/hypr/scripts/cliphist-rofi-img"
+
 sleep 110

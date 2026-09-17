@@ -1,9 +1,9 @@
 [Unit]
-Description=Warm cliphist image thumbnails (keep rofi clipboard instant)
+Description=Warm cliphist thumbnails + rebuild rofi clipboard cache
 
 [Service]
 Type=simple
-ExecStart=%h/.config/hypr/scripts/warm-thumbs.sh
+ExecStart=%h/.config/hypr/scripts/clip-refresh.sh
 Restart=always
 RestartSec=120
 

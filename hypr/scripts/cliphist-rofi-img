@@ -1,6 +1,7 @@
 #!/bin/bash
 
 THUMB_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/cliphist-thumbs"
+CLIP_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/cliphist-clipboard-list"
 mkdir -p "$THUMB_DIR"
 
 sanitize() { printf '%s\n' "$1" | tr -cd '[:print:]'; }
@@ -49,8 +50,14 @@ print_list() {
   done
 }
 
+if [ "${CLIP_CACHE_MODE:-}" = "warm" ]; then
+  print_list > "$CLIP_CACHE" 2>/dev/null
+  exit 0
+fi
+
 if [ -z "$1" ] || [ "${ROFI_RETV:-0}" = "0" ]; then
-  print_list
+  # open from the pre-built cache for instant load
+  [ -f "$CLIP_CACHE" ] && cat "$CLIP_CACHE" || print_list
   exit 0
 fi
 
