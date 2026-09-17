@@ -57,5 +57,14 @@ case "${ROFI_RETV:-1}" in
     printf '%s\n' "$1" | cliphist delete 2>/dev/null
     print_list
     ;;
+  # V pressed -> open the image fullscreen in the default viewer (feh)
+  10)
+    id="${1%%$'\t'*}"
+    f="$THUMB_DIR/clip-open-$id.png"
+    printf '%s\n' "$1" | cliphist decode 2>/dev/null > "$f"
+    if [ -s "$f" ]; then
+      setsid feh --fullscreen --zoom fill "$f" >/dev/null 2>&1 &
+    fi
+    ;;
   *) echo "$1" | cliphist decode | wl-copy ;;
 esac

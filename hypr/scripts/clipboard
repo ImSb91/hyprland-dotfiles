@@ -4,4 +4,5 @@ rofi \
     -show clipboard \
     -show-icons \
     -kb-delete-entry "D,Shift+Delete" \
+    -kb-custom-1 "V" \
     -theme-str 'window { height: 350px; } listview { lines: 4; } element-icon { size: 56px; }'
