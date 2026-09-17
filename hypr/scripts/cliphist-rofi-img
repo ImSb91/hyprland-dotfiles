@@ -28,8 +28,8 @@ emit_image() {
 
 print_list() {
   local rows line id rest
-  # cap to the most recent items so the menu opens instantly
-  mapfile -t rows < <(cliphist list | head -100)
+  # full history; thumbnails are pre-warmed so this stays instant
+  mapfile -t rows < <(cliphist list)
   # keep rofi from jumping to the top (or resetting the filter) after a refresh
   printf '\0keep-selection\x1ftrue\n\0keep-filter\x1ftrue\n'
   # enable custom keybindings (V -> RETV 10)

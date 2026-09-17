@@ -1,0 +1,11 @@
+[Unit]
+Description=Warm cliphist image thumbnails (keep rofi clipboard instant)
+
+[Service]
+Type=simple
+ExecStart=%h/.config/hypr/scripts/warm-thumbs.sh
+Restart=always
+RestartSec=120
+
+[Install]
+WantedBy=default.target
