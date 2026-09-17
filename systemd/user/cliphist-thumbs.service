@@ -1,11 +1,11 @@
 [Unit]
 Description=Warm cliphist thumbnails + rebuild rofi clipboard cache
+StartLimitIntervalSec=0
+StartLimitBurst=0
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=%h/.config/hypr/scripts/clip-refresh.sh
-Restart=always
-RestartSec=120
 
 [Install]
 WantedBy=default.target

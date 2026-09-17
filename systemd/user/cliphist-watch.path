@@ -1,0 +1,10 @@
+[Unit]
+Description=Trigger clipboard cache rebuild when cliphist changes
+
+[Path]
+PathChanged=%h/.cache/cliphist/db
+Unit=cliphist-thumbs.service
+TriggerLimitIntervalSec=3
+
+[Install]
+WantedBy=default.target

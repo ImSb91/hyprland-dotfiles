@@ -16,4 +16,4 @@ done
 # 2. rebuild the rofi list cache
 CLIP_CACHE_MODE=warm "$HOME/.config/hypr/scripts/cliphist-rofi-img"
 
-sleep 110
+
